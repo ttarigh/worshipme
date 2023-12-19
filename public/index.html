@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Image Upload</title>
+    <style>
+      body,
+      html {
+        height: 100%;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: rgb(255, 122, 215);
+      }
+      .content {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+      h1 {
+        font-size: 40px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="content">
+      <h1>Upload Your Image</h1>
+      <form
+        id="formButton"
+        action="/upload"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        <input type="file" name="photo" accept="image/*" required />
+        <button type="submit">Upload</button>
+      </form>
+    </div>
+    <script>
+      const maxPopups = 5;
+      const candles = ["candle1.gif", "candle2.gif", "candle3.gif"];
+
+      function openRandomPopup(index) {
+        const popupWidth = Math.floor(Math.random() * 600) + 200; // Random width between 200 and 800 pixels
+        const popupHeight = Math.floor(Math.random() * 400) + 200; // Random height between 200 and 600 pixels
+
+        const left = (window.screen.width - popupWidth) * Math.random();
+        const top = (window.screen.height - popupHeight) * Math.random();
+
+        const candleSource = getRandomCandle();
+        const uniqueUrl = `candle.html?popup=${index}&candleSource=${candleSource}`;
+
+        const popup = window.open(
+          uniqueUrl,
+          `Random Popup ${index}`,
+          `width=${popupWidth}, height=${popupHeight}, left=${left}, top=${top}`
+        );
+
+        if (popup) {
+          setTimeout(() => {
+            popup.resizeTo(popupWidth, popupHeight);
+            popup.moveTo(left, top);
+          }, 500);
+        } else {
+          alert("Popup blocked. Please allow popups and try again.");
+        }
+      }
+      function getRandomCandle() {
+        const randomIndex = Math.floor(Math.random() * candles.length);
+        return candles[randomIndex];
+      }
+      document.getElementById("formButton").addEventListener('submit', () => {
+        for (let i = 0; i < maxPopups; i++) {
+          openRandomPopup(i);
+        }
+      });
+    </script>
+  </body>
+</html>

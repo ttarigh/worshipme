@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <!-- 
+  TO DO: 
+  - [] Add food popups
+  - [] I think put the candle 2 in food popups since it is short and stout? 
+  - [] Don't let popups cover the image
+  - [] Make background color random for every popup
+  - [] Add frame and other decorations to background 
+  -->
+  <head>
+    <title>Uploaded Image</title>
+    <style>
+      body,
+      html {
+        height: 100%;
+        margin: 0;
+        background-color: rgb(255, 122, 215);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      img {
+        max-width: 100%;
+        max-height: 50%;
+        margin-bottom: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- look to the server.js code for changing the values of img and button  -->
+    <img src="download.png" alt="Uploaded Image" />
+    <img src="frame.png" alt="Frame" />
+    <button id="dummy">WORSHIP ME</button>
+  </body>
+  <script>
+    const maxPopups = 20;
+    const candles = ["candle1.gif", "candle2.gif", "candle3.gif"];
+    const foods = ["food1.gif", "food2.gif", "food3.gif", "food4.gif", "food5.gif"];
+
+    function openRandomPopup(index) {
+      const popupWidth = Math.floor(Math.random() * 70) + 100;
+      const popupHeight = Math.floor(Math.random() * 100) + 200;
+
+      const exclusionZone = {
+        left: window.screen.width / 4,
+        right: (window.screen.width * 3) / 4,
+        top: window.screen.height / 4,
+        bottom: (window.screen.height * 3) / 4,
+      };
+
+      let left, top;
+      function generatePosition() {
+        left = Math.random() * (window.screen.width - popupWidth);
+        top = Math.random() * (window.screen.height - popupHeight);
+
+        // Check if the position is in the central exclusion zone
+        if (
+          left > exclusionZone.left &&
+          left < exclusionZone.right - popupWidth &&
+          top > exclusionZone.top &&
+          top < exclusionZone.bottom - popupHeight
+        ) {
+          // Recalculate position if it's in the exclusion zone
+          generatePosition();
+        }
+      }
+
+      generatePosition();
+
+      const candleSource = getRandomCandle();
+      const uniqueUrl = `candle.html?popup=${index}&candleSource=${candleSource}`;
+
+      const popup = window.open(
+        uniqueUrl,
+        `Random Popup ${index}`,
+        `width=${popupWidth}, height=${popupHeight}, left=${left}, top=${top}`
+      );
+
+      if (popup) {
+        setTimeout(() => {
+          popup.resizeTo(popupWidth, popupHeight);
+          popup.moveTo(left, top);
+        }, 500);
+      } else {
+        alert("Popup blocked. Please allow popups and try again.");
+      }
+    }
+    function getRandomCandle() {
+      const randomIndex = Math.floor(Math.random() * candles.length);
+      return candles[randomIndex];
+    }
+    document.getElementById("dummy").addEventListener("click", () => {
+      for (let i = 0; i < maxPopups; i++) {
+        openRandomPopup(i);
+      }
+    });
+  </script>
+</html>
