@@ -141,6 +141,7 @@ app.get('/image/:imageName', (req, res) => {
             openFood();
             button.innerHTML = "great job my little worshipper:)";
             console.log(clickCount);
+            button.style.pointerEvents = "none";
             break;
           default:
             console.log("More than 4 clicks");
