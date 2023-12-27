@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html>
   <!-- 
   TO DO: 
   - [] Add food popups
@@ -8,6 +6,8 @@
   - [] Make background color random for every popup
   - [] Add frame and other decorations to background 
   -->
+<!DOCTYPE html>
+<html>
   <head>
     <title>Uploaded Image</title>
     <style>
@@ -15,7 +15,7 @@
       html {
         height: 100%;
         margin: 0;
-        background-color: rgb(255, 122, 215);
+        background-color: rgb(222, 81, 180);
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -28,78 +28,86 @@
       }
       button {
         padding: 10px 20px;
+        margin-bottom: 10px;
         font-size: 16px;
         cursor: pointer;
       }
     </style>
   </head>
   <body>
+    <!-- <img src="/uploads/${imageName}" alt="Uploaded Image">
+    <button onclick="window.location.href='/'">Make My Own Shrine</button> -->
     <!-- look to the server.js code for changing the values of img and button  -->
-    <img src="download.png" alt="Uploaded Image" />
-    <img src="frame.png" alt="Frame" />
     <button id="dummy">WORSHIP ME</button>
+    <img src="download.png" alt="Uploaded Image" />
+
   </body>
   <script>
-    const maxPopups = 20;
-    const candles = ["candle1.gif", "candle2.gif", "candle3.gif"];
-    const foods = ["food1.gif", "food2.gif", "food3.gif", "food4.gif", "food5.gif"];
-
-    function openRandomPopup(index) {
-      const popupWidth = Math.floor(Math.random() * 70) + 100;
-      const popupHeight = Math.floor(Math.random() * 100) + 200;
-
-      const exclusionZone = {
-        left: window.screen.width / 4,
-        right: (window.screen.width * 3) / 4,
-        top: window.screen.height / 4,
-        bottom: (window.screen.height * 3) / 4,
-      };
-
-      let left, top;
-      function generatePosition() {
-        left = Math.random() * (window.screen.width - popupWidth);
-        top = Math.random() * (window.screen.height - popupHeight);
-
-        // Check if the position is in the central exclusion zone
-        if (
-          left > exclusionZone.left &&
-          left < exclusionZone.right - popupWidth &&
-          top > exclusionZone.top &&
-          top < exclusionZone.bottom - popupHeight
-        ) {
-          // Recalculate position if it's in the exclusion zone
-          generatePosition();
-        }
-      }
-
-      generatePosition();
-
-      const candleSource = getRandomCandle();
-      const uniqueUrl = `candle.html?popup=${index}&candleSource=${candleSource}`;
-
-      const popup = window.open(
-        uniqueUrl,
-        `Random Popup ${index}`,
-        `width=${popupWidth}, height=${popupHeight}, left=${left}, top=${top}`
-      );
-
-      if (popup) {
-        setTimeout(() => {
-          popup.resizeTo(popupWidth, popupHeight);
-          popup.moveTo(left, top);
-        }, 500);
-      } else {
-        alert("Popup blocked. Please allow popups and try again.");
-      }
+    function openFirstPopups(){
+      //big candles
+      window.open(`candle.html?popup=1&candleSource=candle3.gif`, `big candle 1`, `width=200,height=500,left=230,top=200`);
+      window.open(`candle.html?popup=2&candleSource=candle3.gif`, `big candle 2`, `width=200,height=500,left=1000,top=200`); 
     }
-    function getRandomCandle() {
-      const randomIndex = Math.floor(Math.random() * candles.length);
-      return candles[randomIndex];
+    function openMorePopups(){
+      openFirstPopups();
+      //smaller candle
+      window.open(`candle.html?popup=1&candleSource=candle1.gif`, `small candle 1`, `width=150,height=150,left=150,top=570`);
+      window.open(`candle.html?popup=2&candleSource=candle1.gif`, `small candle 2`, `width=150,height=150,left=350,top=600`);
+      window.open(`candle.html?popup=3&candleSource=candle1.gif`, `small candle 3`, `width=150,height=150,left=500,top=550`);
+      window.open(`candle.html?popup=4&candleSource=candle1.gif`, `small candle 4`, `width=150,height=150,left=700,top=600`);
+      window.open(`candle.html?popup=5&candleSource=candle1.gif`, `small candle 5`, `width=150,height=150,left=800,top=550`);
+      window.open(`candle.html?popup=6&candleSource=candle1.gif`, `small candle 6`, `width=150,height=150,left=900,top=530`);
+      window.open(`candle.html?popup=7&candleSource=candle1.gif`, `small candle 7`, `width=150,height=150,left=1150,top=600`);
     }
+    function openFlyingPopups(){
+      openMorePopups();
+      //flying candle
+      window.open(`candle.html?popup=1&candleSource=candle2.gif`, `flying candle 1`, `width=150,height=150,left=500,top=30`);
+      window.open(`candle.html?popup=2&candleSource=candle2.gif`, `flying candle 2`, `width=150,height=150,left=800,top=30`);
+      window.open(`candle.html?popup=3&candleSource=candle2.gif`, `flying candle 3`, `width=150,height=150,left=100,top=300`);
+      window.open(`candle.html?popup=4&candleSource=candle2.gif`, `flying candle 4`, `width=150,height=150,left=1200,top=300`)
+    }
+    function openFood(){
+      openFlyingPopups();
+      //foods
+      window.open(`candle.html?popup=1&candleSource=food1.gif`, `food 1`, `width=150,height=150,left=1000,top=650`);
+      window.open(`candle.html?popup=1&candleSource=food2.gif`, `food 2`, `width=150,height=150,left=20,top=560`);
+      window.open(`candle.html?popup=1&candleSource=food3.gif`, `food 3`, `width=150,height=150,left=370,top=400`);
+      window.open(`candle.html?popup=1&candleSource=food4.gif`, `food 4`, `width=150,height=150,left=1400,top=500`);
+      window.open(`candle.html?popup=1&candleSource=food5.gif`, `food 5`, `width=150,height=150,left=600,top=650`);
+    }
+
+    let clickCount = 0;
+
     document.getElementById("dummy").addEventListener("click", () => {
-      for (let i = 0; i < maxPopups; i++) {
-        openRandomPopup(i);
-      }
-    });
+    clickCount++;
+
+    var button = document.getElementById("dummy");
+    switch (clickCount) {
+      case 1:
+        openFirstPopups();
+        button.innerHTML = "HARDER";
+        console.log(clickCount);
+        break;
+      case 2:
+        openMorePopups();
+        button.innerHTML = "EVEN HARDER";
+        console.log(clickCount);
+        break;
+      case 3:
+        openFlyingPopups();
+        button.innerHTML = "IM HUNGRY TOO";
+        console.log(clickCount);
+        break;
+      case 4:
+        openFood();
+        button.innerHTML = "great job my little worshipper:)";
+        console.log(clickCount);
+        break;
+      default:
+        console.log("More than 4 clicks");
+        break;
+    }
+  });
   </script>
 </html>
