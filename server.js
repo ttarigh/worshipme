@@ -40,6 +40,10 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+app.get('/server.js', (req, res) => {
+  res.sendFile(path.join(__dirname, 'server.js'));
+});
+
 // Route to display the image in an HTML page
 app.get('/image/:imageName', (req, res) => {
   const imageName = req.params.imageName;
