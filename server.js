@@ -19,8 +19,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Serve static files from 'public' directory
-app.use(express.static('public'));
+
 
 // Endpoint to handle file upload
 app.post('/upload', upload.single('photo'), (req, res) => {
@@ -166,7 +165,11 @@ app.get('/image/:imageName', (req, res) => {
   }
 });
 
+// Serve static files from 'public' directory
+app.use(express.static('public'));
+
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
+
 
