@@ -3,7 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.NODE_ENV === "development" ? 3000 : 80; 
 
 // Set up storage for uploaded files
 const storage = multer.diskStorage({
@@ -169,7 +169,7 @@ app.get('/image/:imageName', (req, res) => {
 app.use(express.static('public'));
 
 app.listen(port, () => {
-  console.log(`Server listening at http://localhost:${port}`);
+  console.log(`Server listening at http://localhost:${port}`); //not always on localhost because sometimes its in production! check port
 });
 
 
