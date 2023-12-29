@@ -36,15 +36,19 @@ app.post('/upload', upload.single('photo'), (req, res) => {
 // Serve uploaded files directly
 app.use('/uploads', express.static('uploads'));
 
-// Add a route for the root URL
-app.get('/', (req, res) => {
-  console.log("index file")
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.get('/tina', (req, res) => {
+  res.send("hello"); 
 });
 
-app.get('/server.js', (req, res) => {
-  res.sendFile(path.join(__dirname, 'server.js'));
-});
+// Add a route for the root URL
+// app.get('/', (req, res) => {
+//   console.log("index file")
+//   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// });
+
+// app.get('/server.js', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'server.js'));
+// });
 
 // Route to display the image in an HTML page
 app.get('/image/:imageName', (req, res) => {
