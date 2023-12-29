@@ -1,58 +1,53 @@
-const express = require('express');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const express = require("express");
+const https = require("https");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 const app = express();
-const port = process.env.NODE_ENV === "development" ? 3000 : 80; 
+
+const dev = process.env.NODE_ENV === "development";
+const port = dev ? 3000 : 80;
+const httpsPort = 443; // HTTPS port
 
 // Set up storage for uploaded files
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/');
+    cb(null, "uploads/");
   },
   filename: function (req, file, cb) {
     // Create a unique file name
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(
+      null,
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
+    );
+  },
 });
 
 const upload = multer({ storage: storage });
 
-
-
 // Endpoint to handle file upload
-app.post('/upload', upload.single('photo'), (req, res) => {
+app.post("/upload", upload.single("photo"), (req, res) => {
   const file = req.file;
   console.log("uploading file");
   if (!file) {
-    return res.status(400).send('No file uploaded.');
+    return res.status(400).send("No file uploaded.");
   }
   // Redirect to the page showing the uploaded image
   res.redirect(`/image/${file.filename}`);
 });
 
 // Serve uploaded files directly
-app.use('/uploads', express.static('uploads'));
+app.use("/uploads", express.static("uploads"));
 
-app.get('/tina', (req, res) => {
-  res.send("hello"); 
+app.get("/tina", (req, res) => {
+  res.send("hello");
 });
 
-// Add a route for the root URL
-// app.get('/', (req, res) => {
-//   console.log("index file")
-//   res.sendFile(path.join(__dirname, 'public', 'index.html'));
-// });
-
-// app.get('/server.js', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'server.js'));
-// });
-
 // Route to display the image in an HTML page
-app.get('/image/:imageName', (req, res) => {
+app.get("/image/:imageName", (req, res) => {
   const imageName = req.params.imageName;
-  const imagePath = path.join(__dirname, 'uploads', imageName);
+  const imagePath = path.join(__dirname, "uploads", imageName);
   console.log("displaying image: ", imagePath);
 
   // Check if the image exists
@@ -159,17 +154,29 @@ app.get('/image/:imageName', (req, res) => {
         }
         });
         </script>
-      </html>`);
+      </html>`
+    );
   } else {
-    res.status(404).send('Image not found');
+    res.status(404).send("Image not found");
   }
 });
 
 // Serve static files from 'public' directory
-app.use(express.static('public'));
+app.use(express.static("public"));
 
-app.listen(port, () => {
-  console.log(`Server listening at http://localhost:${port}`); //not always on localhost because sometimes its in production! check port
-});
+if (dev) {
+  app.listen(port, () => {
+    console.log(`Server listening at http://localhost:${port}`); //not always on localhost because sometimes its in production! check port
+  });
+} else {
+  // HTTPS options
+  const httpsOptions = {
+    key: fs.readFileSync("/etc/letsencrypt/live/worshipme.tina.zone/privkey.pem"),
+    cert: fs.readFileSync("/etc/letsencrypt/live/worshipme.tina.zone/fullchain.pem"),
+  };
 
-
+  // Create an HTTPS server
+  https.createServer(httpsOptions, app).listen(httpsPort, () => {
+    console.log(`Server listening at https://localhost:${httpsPort}`);
+  });
+}
