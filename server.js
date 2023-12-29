@@ -38,6 +38,7 @@ app.use('/uploads', express.static('uploads'));
 
 // Add a route for the root URL
 app.get('/', (req, res) => {
+  console.log("index file")
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
