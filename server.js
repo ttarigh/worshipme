@@ -25,6 +25,7 @@ app.use(express.static('public'));
 // Endpoint to handle file upload
 app.post('/upload', upload.single('photo'), (req, res) => {
   const file = req.file;
+  console.log("uploading file");
   if (!file) {
     return res.status(400).send('No file uploaded.');
   }
@@ -48,6 +49,7 @@ app.get('/server.js', (req, res) => {
 app.get('/image/:imageName', (req, res) => {
   const imageName = req.params.imageName;
   const imagePath = path.join(__dirname, 'uploads', imageName);
+  console.log("displaying image: ", imagePath);
 
   // Check if the image exists
   if (fs.existsSync(imagePath)) {
