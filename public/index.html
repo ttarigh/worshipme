@@ -20,7 +20,7 @@
       href="img/favicon-16x16.png"
     />
     <link rel="manifest" href="img/site.webmanifest" />
-    <title>Image Upload</title>
+    <title>Create a Digital Shrine!</title>
     <style>
       body,
       html {
@@ -43,10 +43,38 @@
         margin-bottom: 20px;
         color: #333;
       }
+      /* Style for the button */
+      .image-button {
+        display: inline-block;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        color: rgb(255, 235, 10);
+        text-decoration: none; /* Remove default text underline */
+        display: flex;
+        flex-direction: column; /* Display children elements in a column */
+        align-items: center; /* Center items horizontally */
+      }
+
+      /* Style for the image */
+      .image-button img {
+        width: 25%;
+        height: 25%;
+      }
+
+      /* Style for the hover effect and label */
+      a:hover {
+        color: red;
+      }
     </style>
   </head>
   <body>
     <div class="content">
+      <a href="http://www.tina.zone" target="_blank" class="image-button">
+        <img src="img/XRpic.png" alt="About the Creator" />
+        <span class="button-text"> check out my other stuff!</span>
+      </a>
+
       <h1>Make a Digital Shrine!</h1>
       <h2>Upload Your Image Below:</h2>
       <form
