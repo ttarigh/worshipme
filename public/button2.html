@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: rgb(255, 106, 230);
+        }
+
+        button {
+            font-size: 16px;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="openFlyingPopups()">HARDER!!</button>
+
+    <script>
+    function openFlyingPopups(){
+      //flying candle
+      window.open(`candle.html?popup=1&candleSource=candle2.gif`, `flying candle 1`, `width=150,height=150,left=500,top=30`);
+      window.open(`candle.html?popup=2&candleSource=candle2.gif`, `flying candle 2`, `width=150,height=150,left=800,top=30`);
+      window.open(`candle.html?popup=3&candleSource=candle2.gif`, `flying candle 3`, `width=150,height=150,left=100,top=300`);
+      window.open(`candle.html?popup=4&candleSource=candle2.gif`, `flying candle 4`, `width=150,height=150,left=1200,top=300`);
+      window.open(`button3.html`, `FEED ME`, `width=100,height=100,left=650,top=150`); 
+    }
+    </script>
+</body>
+</html>

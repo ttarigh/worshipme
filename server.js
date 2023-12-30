@@ -90,36 +90,8 @@ app.get("/image/:imageName", (req, res) => {
           //big candles
           window.open(\`/candle.html?popup=1&candleSource=candle3.gif\`, \`big candle 1\`, \`width=200,height=500,left=230,top=200\`);
           window.open(\`/candle.html?popup=2&candleSource=candle3.gif\`, \`big candle 2\`, \`width=200,height=500,left=1000,top=200\`); 
+          window.open(\`/button1.html\`, \`HARDER\`, \`width=100,height=100,left=650,top=150\`); 
         }
-        function openMorePopups(){
-          openFirstPopups();
-          //smaller candle
-          window.open(\`/candle.html?popup=1&candleSource=candle1.gif\`, \`small candle 1\`, \`width=150,height=150,left=150,top=570\`);
-          window.open(\`/candle.html?popup=2&candleSource=candle1.gif\`, \`small candle 2\`, \`width=150,height=150,left=350,top=600\`);
-          window.open(\`/candle.html?popup=3&candleSource=candle1.gif\`, \`small candle 3\`, \`width=150,height=150,left=500,top=550\`);
-          window.open(\`/candle.html?popup=4&candleSource=candle1.gif\`, \`small candle 4\`, \`width=150,height=150,left=700,top=600\`);
-          window.open(\`/candle.html?popup=5&candleSource=candle1.gif\`, \`small candle 5\`, \`width=150,height=150,left=800,top=550\`);
-          window.open(\`/candle.html?popup=6&candleSource=candle1.gif\`, \`small candle 6\`, \`width=150,height=150,left=900,top=530\`);
-          window.open(\`/candle.html?popup=7&candleSource=candle1.gif\`, \`small candle 7\`, \`width=150,height=150,left=1150,top=600\`);
-        }
-        function openFlyingPopups(){
-          openMorePopups();
-          //flying candle
-          window.open(\`/candle.html?popup=1&candleSource=candle2.gif\`, \`flying candle 1\`, \`width=150,height=150,left=500,top=30\`);
-          window.open(\`/candle.html?popup=2&candleSource=candle2.gif\`, \`flying candle 2\`, \`width=150,height=150,left=800,top=30\`);
-          window.open(\`/candle.html?popup=3&candleSource=candle2.gif\`, \`flying candle 3\`, \`width=150,height=150,left=100,top=300\`);
-          window.open(\`/candle.html?popup=4&candleSource=candle2.gif\`, \`flying candle 4\`, \`width=150,height=150,left=1200,top=300\`)
-        }
-        function openFood(){
-          openFlyingPopups();
-          //foods
-          window.open(\`/candle.html?popup=1&candleSource=food1.gif\`, \`food 1\`, \`width=150,height=150,left=1000,top=650\`);
-          window.open(\`/candle.html?popup=1&candleSource=food2.gif\`, \`food 2\`, \`width=150,height=150,left=20,top=560\`);
-          window.open(\`/candle.html?popup=1&candleSource=food3.gif\`, \`food 3\`, \`width=150,height=150,left=370,top=400\`);
-          window.open(\`/candle.html?popup=1&candleSource=food4.gif\`, \`food 4\`, \`width=150,height=150,left=1400,top=500\`);
-          window.open(\`/candle.html?popup=1&candleSource=food5.gif\`, \`food 5\`, \`width=150,height=150,left=600,top=650\`);
-        }
-        
         let clickCount = 0;
         
         document.getElementById("dummy").addEventListener("click", () => {
@@ -131,22 +103,6 @@ app.get("/image/:imageName", (req, res) => {
             openFirstPopups();
             button.innerHTML = "HARDER";
             console.log(clickCount);
-            break;
-          case 2:
-            openMorePopups();
-            button.innerHTML = "EVEN HARDER";
-            console.log(clickCount);
-            break;
-          case 3:
-            openFlyingPopups();
-            button.innerHTML = "IM HUNGRY TOO";
-            console.log(clickCount);
-            break;
-          case 4:
-            openFood();
-            button.innerHTML = "great job my little worshipper:)";
-            console.log(clickCount);
-            button.style.pointerEvents = "none";
             break;
           default:
             console.log("More than 4 clicks");
