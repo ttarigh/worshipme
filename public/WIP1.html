@@ -1,4 +1,4 @@
-  <!-- 
+<!-- 
   TO DO: 
   - [] Add food popups
   - [] I think put the candle 2 in food popups since it is short and stout? 
@@ -40,31 +40,56 @@
     <!-- look to the server.js code for changing the values of img and button  -->
     <button id="dummy">WORSHIP ME</button>
     <img src="download.png" alt="Uploaded Image" />
-
   </body>
   <script>
-    function openFirstPopups(){
+    function openFirstPopups() {
       //big candles
-      window.open(`candle.html?popup=1&candleSource=candle3.gif`, `big candle 1`, `width=200,height=500,left=230,top=200`);
-      window.open(`candle.html?popup=2&candleSource=candle3.gif`, `big candle 2`, `width=200,height=500,left=1000,top=200`); 
-      window.open(`button1.html`, `HARDER`, `width=100,height=100,left=650,top=150`); 
-
+      window.open(
+        `candle.html?popup=1&candleSource=candle3.gif`,
+        `big candle 1`,
+        `width=200,height=500,left=230,top=200`
+      );
+      window.open(
+        `candle.html?popup=2&candleSource=candle3.gif`,
+        `big candle 2`,
+        `width=200,height=500,left=1000,top=200`
+      );
+      window.open(
+        `button1.html`,
+        `HARDER`,
+        `width=100,height=100,left=650,top=150`
+      );
     }
     let clickCount = 0;
 
     document.getElementById("dummy").addEventListener("click", () => {
-    clickCount++;
+      clickCount++;
 
-    var button = document.getElementById("dummy");
-    switch (clickCount) {
-      case 1:
-        openFirstPopups();
-        button.innerHTML = "HARDER";
-        console.log(clickCount);
-        break;
-      default:
-        break;
+      var button = document.getElementById("dummy");
+      switch (clickCount) {
+        case 1:
+          openFirstPopups();
+          button.innerHTML = "HARDER";
+          console.log(clickCount);
+          break;
+        default:
+          break;
+      }
+    });
+
+    function isPopupBlocked() {
+      // Open a dummy popup
+      var popup = window.open("", "test-popup", "width=1,height=1");
+      if (!popup || popup.closed || typeof popup.closed === "undefined") {
+        // Popup was blocked
+        alert("You have popups blocked. Allow popups and reload the page to build your digital shrine!")
+        return true;
+      }
+      // Close the dummy popup
+      popup.close();
+      // Popup wasn't blocked
+      return false;
     }
-  });
+
   </script>
 </html>

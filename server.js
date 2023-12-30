@@ -62,7 +62,7 @@ app.get("/image/:imageName", (req, res) => {
             html {
               height: 100%;
               margin: 0;
-              background-color: rgb(200, 122, 215);
+              background-color: rgb(255, 122, 215);
               display: flex;
               flex-direction: column;
               justify-content: center;
@@ -109,6 +109,19 @@ app.get("/image/:imageName", (req, res) => {
             break;
         }
         });
+        function isPopupBlocked() {
+          // Open a dummy popup
+          var popup = window.open("", "test-popup", "width=1,height=1");
+          if (!popup || popup.closed || typeof popup.closed === "undefined") {
+            // Popup was blocked
+            alert("You have popups blocked. Allow popups and reload the page to build your digital shrine!")
+            return true;
+          }
+          // Close the dummy popup
+          popup.close();
+          // Popup wasn't blocked
+          return false;
+        }
         </script>
       </html>`
     );
