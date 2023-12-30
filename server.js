@@ -62,7 +62,7 @@ app.get("/image/:imageName", (req, res) => {
             html {
               height: 100%;
               margin: 0;
-              background-color: rgb(255, 122, 215);
+              background-color: rgb(200, 122, 215);
               display: flex;
               flex-direction: column;
               justify-content: center;
