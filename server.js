@@ -57,6 +57,24 @@ app.get("/image/:imageName", (req, res) => {
       <html>
         <head>
           <title>Uploaded Image</title>
+          <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/img/apple-touch-icon.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/img/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/img/favicon-16x16.png"
+        />
+        <link rel="manifest" href="/img/site.webmanifest" />
           <style>
             body,
             html {
@@ -140,8 +158,12 @@ if (dev) {
 } else {
   // HTTPS options
   const httpsOptions = {
-    key: fs.readFileSync("/etc/letsencrypt/live/worshipme.tina.zone/privkey.pem"),
-    cert: fs.readFileSync("/etc/letsencrypt/live/worshipme.tina.zone/fullchain.pem"),
+    key: fs.readFileSync(
+      "/etc/letsencrypt/live/worshipme.tina.zone/privkey.pem"
+    ),
+    cert: fs.readFileSync(
+      "/etc/letsencrypt/live/worshipme.tina.zone/fullchain.pem"
+    ),
   };
 
   // Create an HTTPS server
