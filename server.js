@@ -26,6 +26,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+let imageUrl = ""; // Declare imageUrl globally
+
 // Endpoint to handle file upload
 app.post("/upload", upload.single("photo"), (req, res) => {
   const file = req.file;
@@ -33,8 +35,13 @@ app.post("/upload", upload.single("photo"), (req, res) => {
   if (!file) {
     return res.status(400).send("No file uploaded.");
   }
+  imageUrl = `https://worshipme.tina.zone/image/${file.filename}`; // Replace 'yourdomain.com' with your actual domain
   // Redirect to the page showing the uploaded image
   res.redirect(`/image/${file.filename}`);
+});
+
+app.get("/image-url", (req, res) => {
+  res.json({ imageUrl: imageUrl }); // Assuming imageUrl is the global variable containing the image URL
 });
 
 // Serve uploaded files directly

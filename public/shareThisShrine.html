@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>copy shrine to clipboard</title>
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background-color: rgb(255, 235, 10);
+      }
+
+      button {
+        font-size: 16px;
+      }
+
+      #imageURL {
+        font-size: 18px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="copyButton">Share This Shrine!</button>
+    <p style="display:none" id="imageURL"></p>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // Fetch image URL from server
+        $.ajax({
+          url: "/image-url",
+          type: "GET",
+          success: function (data) {
+            // Update the paragraph content with the fetched image URL
+            $("#imageURL").text(`${data.imageUrl}`);
+          },
+          error: function (error) {
+            console.error("Error fetching image URL:", error);
+          },
+        });
+
+        // Handle button click event to copy image URL to clipboard
+        $("#copyButton").click(function () {
+          // Create a temporary input element
+          var input = $("<input>");
+          $("body").append(input);
+
+          // Set the value of the input element to the image URL
+          input.val($("#imageURL").text());
+
+          // Select the input element's text
+          input.select();
+
+          // Copy the selected text to the clipboard
+          document.execCommand("copy");
+
+          // Remove the temporary input element
+          input.remove();
+
+          // Provide visual feedback to the user
+          alert("Shrine copied to clipboard!");
+        });
+      });
+    </script>
+  </body>
+</html>
