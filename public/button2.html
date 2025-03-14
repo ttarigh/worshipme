@@ -23,13 +23,34 @@
     <button onclick="openFlyingPopups()">HARDER!!</button>
 
     <script>
-    function openFlyingPopups(){
-      //flying candle
-      window.open(`candle.html?popup=1&candleSource=candle2.gif`, `flying candle 1`, `width=150,height=150,left=500,top=30`);
-      window.open(`candle.html?popup=2&candleSource=candle2.gif`, `flying candle 2`, `width=150,height=150,left=800,top=30`);
-      window.open(`candle.html?popup=3&candleSource=candle2.gif`, `flying candle 3`, `width=150,height=150,left=100,top=300`);
-      window.open(`candle.html?popup=4&candleSource=candle2.gif`, `flying candle 4`, `width=150,height=150,left=1200,top=300`);
-      window.open(`button3.html`, `FEED ME`, `width=100,height=100,left=650,top=150`); 
+    function openFlyingPopups() {
+      // Get dimensions from the root window (the one with the image)
+      const rootWindow = window.opener.opener || window.opener;  // Get root window
+      const screenWidth = rootWindow.innerWidth;
+      const screenHeight = rootWindow.innerHeight;
+      
+      // Position flying candles in corners
+      const positions = [
+        { left: 0.35, top: 0.05 },  // top left
+        { left: 0.65, top: 0.05 },  // top right
+        { left: 0.05, top: 0.4 },   // middle left
+        { left: 0.85, top: 0.4 }    // middle right
+      ];
+      
+      positions.forEach((pos, index) => {
+        window.open(
+          `candle.html?popup=${index + 1}&candleSource=candle2.gif`,
+          `flying candle ${index + 1}`,
+          `width=150,height=150,left=${Math.floor(screenWidth * pos.left)},top=${Math.floor(screenHeight * pos.top)}`
+        );
+      });
+      
+      // Center the next button
+      window.open(
+        `button3.html`,
+        `FEED ME`,
+        `width=100,height=100,left=${Math.floor(screenWidth * 0.45)},top=${Math.floor(screenHeight * 0.1)}`
+      );
     }
     </script>
 </body>

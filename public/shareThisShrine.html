@@ -37,8 +37,8 @@
           url: "/image-url",
           type: "GET",
           success: function (data) {
-            // Update the paragraph content with the fetched image URL
-            $("#imageURL").text(`${data.imageUrl}`);
+            const fullUrl = `${window.location.origin}/shrine/${data.id}`;
+            $("#imageURL").text(fullUrl);
           },
           error: function (error) {
             console.error("Error fetching image URL:", error);

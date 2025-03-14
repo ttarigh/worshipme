@@ -3,10 +3,17 @@ const https = require("https");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const pool = require('./config/database');
+require('dotenv').config();
 const app = express();
 
+// Create uploads directory if it doesn't exist
+if (!fs.existsSync("uploads")) {
+  fs.mkdirSync("uploads");
+}
+
 const dev = process.env.NODE_ENV === "development";
-const port = dev ? 3000 : 80;
+const port = process.env.PORT || 3000;
 const httpsPort = 443; // HTTPS port
 
 // Set up storage for uploaded files
@@ -29,19 +36,50 @@ const upload = multer({ storage: storage });
 let imageUrl = ""; // Declare imageUrl globally
 
 // Endpoint to handle file upload
-app.post("/upload", upload.single("photo"), (req, res) => {
+app.post("/upload", upload.single("photo"), async (req, res) => {
   const file = req.file;
   console.log("uploading file");
+  
   if (!file) {
     return res.status(400).send("No file uploaded.");
   }
-  imageUrl = `https://worshipme.tina.zone/image/${file.filename}`; // Replace 'yourdomain.com' with your actual domain
-  // Redirect to the page showing the uploaded image
-  res.redirect(`/image/${file.filename}`);
+
+  try {
+    // Store image info in database
+    const result = await pool.query(
+      'INSERT INTO images (filename, filepath, created_at) VALUES ($1, $2, NOW()) RETURNING id',
+      [file.filename, `/uploads/${file.filename}`]
+    );
+    
+    const imageId = result.rows[0].id;
+    imageUrl = `/image/${file.filename}`;
+    
+    res.redirect(`/image/${file.filename}`);
+  } catch (err) {
+    console.error('Error storing image info:', err);
+    res.status(500).send('Error uploading image');
+  }
 });
 
-app.get("/image-url", (req, res) => {
-  res.json({ imageUrl: imageUrl }); // Assuming imageUrl is the global variable containing the image URL
+app.get("/image-url", async (req, res) => {
+  try {
+    // Get the most recent image upload
+    const result = await pool.query(
+      'SELECT id, filepath FROM images ORDER BY created_at DESC LIMIT 1'
+    );
+    
+    if (result.rows.length > 0) {
+      res.json({ 
+        imageUrl: imageUrl,
+        id: result.rows[0].id 
+      });
+    } else {
+      res.status(404).json({ error: 'No images found' });
+    }
+  } catch (err) {
+    console.error('Error fetching image:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 // Serve uploaded files directly
@@ -64,30 +102,16 @@ app.get("/image/:imageName", (req, res) => {
       <html>
         <head>
           <title>Uploaded Image</title>
-          <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="/img/apple-touch-icon.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="32x32"
-          href="/img/favicon-32x32.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="16x16"
-          href="/img/favicon-16x16.png"
-        />
-        <link rel="manifest" href="/img/site.webmanifest" />
+          <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+          <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png" />
+          <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png" />
+          <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png" />
+          <link rel="manifest" href="/img/site.webmanifest" />
           <style>
-            body,
-            html {
+            body, html {
               height: 100%;
               margin: 0;
-              background-color: rgb(0, 122, 215);
+              background-color: rgb(255, 106, 230);
               display: flex;
               flex-direction: column;
               justify-content: center;
@@ -98,56 +122,90 @@ app.get("/image/:imageName", (req, res) => {
               max-height: 50%;
               margin-bottom: 20px;
             }
-            button {
-              padding: 10px 20px;
-              font-size: 16px;
-              margin-bottom: 10px;
-              cursor: pointer;
+            .worship-text {
+              font-family: 'Dancing Script', cursive;
+              font-size: 4em;
+              color: #FFD700;  /* Gold color */
+              text-shadow: 2px 2px 4px rgb(145, 0, 98);
+              margin-bottom: 20px;
+              animation: glow 2s ease-in-out infinite alternate;
+            }
+            @keyframes glow {
+              from {
+                text-shadow: 0 0 5px rgb(145, 0, 98), 0 0 10px rgb(145, 0, 98), 0 0 15px #FFD700, 0 0 20px #FFD700;
+              }
+              to {
+                text-shadow: 0 0 10px rgb(145, 0, 98), 0 0 20px rgb(145, 0, 98), 0 0 30px #FFD700, 0 0 40px #FFD700;
+              }
+            }
+            #popup-warning {
+              background: rgba(255, 255, 255, 0.9);
+              padding: 20px;
+              border-radius: 10px;
+              text-align: center;
+              position: fixed;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              display: none;
             }
           </style>
         </head>
         <body>
-        <button id="dummy">WORSHIP ME</button>
-        <img src="/uploads/${imageName}" alt="Uploaded Image" />
+          <div class="worship-text">WORSHIP ME</div>
+          <div id="popup-warning">
+            <h2>Please Enable Popups</h2>
+            <p>This experience requires popups to be enabled. Please enable popups and refresh the page.</p>
+          </div>
+          <img src="/uploads/${imageName}" alt="Uploaded Image" />
+          <script>
+            function checkPopups() {
+              var popup = window.open('', 'test', 'width=1,height=1');
+              if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+                document.getElementById('popup-warning').style.display = 'block';
+                return false;
+              }
+              popup.close();
+              return true;
+            }
+
+            function startExperience() {
+              if (checkPopups()) {
+                // Calculate positions based on screen size
+                const screenWidth = window.innerWidth;
+                const screenHeight = window.innerHeight;
+                
+                // Position big candles on either side of the image
+                const leftCandle = Math.floor(screenWidth * 0.15);  // 15% from left
+                const rightCandle = Math.floor(screenWidth * 0.75); // 75% from left
+                const candleTop = Math.floor(screenHeight * 0.2);   // 20% from top
+                
+                // Center the HARDER button
+                const buttonLeft = Math.floor(screenWidth * 0.45);  // 45% from left
+                const buttonTop = Math.floor(screenHeight * 0.1);   // 10% from top
+
+                window.open(
+                  \`/candle.html?popup=1&candleSource=candle3.gif\`, 
+                  \`big candle 1\`, 
+                  \`width=200,height=500,left=\${leftCandle},top=\${candleTop}\`
+                );
+                window.open(
+                  \`/candle.html?popup=2&candleSource=candle3.gif\`, 
+                  \`big candle 2\`, 
+                  \`width=200,height=500,left=\${rightCandle},top=\${candleTop}\`
+                );
+                window.open(
+                  \`/button1.html\`, 
+                  \`HARDER\`, 
+                  \`width=100,height=100,left=\${buttonLeft},top=\${buttonTop}\`
+                );
+              }
+            }
+
+            // Start the experience automatically when page loads
+            window.onload = startExperience;
+          </script>
         </body>
-        <script>
-        function openFirstPopups(){
-          //big candles
-          window.open(\`/candle.html?popup=1&candleSource=candle3.gif\`, \`big candle 1\`, \`width=200,height=500,left=230,top=200\`);
-          window.open(\`/candle.html?popup=2&candleSource=candle3.gif\`, \`big candle 2\`, \`width=200,height=500,left=1000,top=200\`); 
-          window.open(\`/button1.html\`, \`HARDER\`, \`width=100,height=100,left=650,top=150\`); 
-        }
-        let clickCount = 0;
-        
-        document.getElementById("dummy").addEventListener("click", () => {
-        clickCount++;
-        
-        var button = document.getElementById("dummy");
-        switch (clickCount) {
-          case 1:
-            openFirstPopups();
-            button.innerHTML = "HARDER";
-            console.log(clickCount);
-            break;
-          default:
-            console.log("More than 4 clicks");
-            break;
-        }
-        });
-        function isPopupBlocked() {
-          // Open a dummy popup
-          var popup = window.open("", "test-popup", "width=1,height=1");
-          if (!popup || popup.closed || typeof popup.closed === "undefined") {
-            // Popup was blocked
-            alert("You have popups blocked. Allow popups and reload the page to build your digital shrine!")
-            return true;
-          }
-          // Close the dummy popup
-          popup.close();
-          // Popup wasn't blocked
-          return false;
-        }
-        </script>
       </html>`
     );
   } else {
@@ -158,23 +216,33 @@ app.get("/image/:imageName", (req, res) => {
 // Serve static files from 'public' directory
 app.use(express.static("public"));
 
-if (dev) {
-  app.listen(port, () => {
-    console.log(`Server listening at http://localhost:${port}`); //not always on localhost because sometimes its in production! check port
-  });
-} else {
-  // HTTPS options
-  const httpsOptions = {
-    key: fs.readFileSync(
-      "/etc/letsencrypt/live/worshipme.tina.zone/privkey.pem"
-    ),
-    cert: fs.readFileSync(
-      "/etc/letsencrypt/live/worshipme.tina.zone/fullchain.pem"
-    ),
-  };
+// Add endpoint to get image by ID
+app.get("/shrine/:id", async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM images WHERE id = $1', [req.params.id]);
+    
+    if (result.rows.length === 0) {
+      return res.status(404).send('Shrine not found');
+    }
+    
+    const image = result.rows[0];
+    res.redirect(`/image/${image.filename}`);
+  } catch (err) {
+    console.error('Error fetching shrine:', err);
+    res.status(500).send('Error loading shrine');
+  }
+});
 
-  // Create an HTTPS server
-  https.createServer(httpsOptions, app).listen(httpsPort, () => {
-    console.log(`Server listening at https://localhost:${httpsPort}`);
-  });
-}
+app.get("/test-db", async (req, res) => {
+  try {
+    const result = await pool.query('SELECT NOW()');
+    res.json({ success: true, timestamp: result.rows[0].now });
+  } catch (err) {
+    console.error('Database connection error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
+});
